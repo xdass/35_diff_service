@@ -1,0 +1,9 @@
+.deleted {
+   color: red;
+}
+.added {
+    color: green;
+}
+.moved {
+    color: #ffe045;
+}

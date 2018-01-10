@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка документов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="row my-4">
+        <div class="col">
+            <ul class="nav nav-pills justify-content-left">
+              <li class="nav-item">
+                <a class="nav-link active" href="#1" data-toggle="tab">Загрузка документов</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#3" data-toggle="tab">Результат</a>
+              </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab-content">
+            <div class="tab-pane active" id="1">
+                <div class="card">
+                <div class="card-body">
+                <form action="">
+                    <div class="form-group">
+                        <label for="doc1">Документ 1</label>
+                        <input type="file" id="doc1">
+                    </div>
+                    <div class="form-group">
+                        <label for="doc2">Документ 2</label>
+                        <input type="file" id="doc2">
+                    </div>
+                    <button type="button" class="btn btn-success" id="process_docs">Сравнить</button>
+                </form>
+                </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="3">
+                <div id="result">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/jquery-3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+</body>
+</html>
