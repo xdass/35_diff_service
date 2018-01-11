@@ -29,21 +29,32 @@ def textDiff(a, b):
             # gonna cop-out for now
             out.append('<span class="deleted">'+''.join(a[e[1]:e[2]]) + '</span><span class="added">'+''.join(b[e[3]:e[4]])+"</span>")
         elif e[0] == "delete":
+            print(e)
+            print(a[e[1]:e[2]], 'deleted from ', e[1], e[2])
+            test_out.append(('<span class="deleted">' + a[e[1]:e[2]][0] + '</span>', e[1], e[2]))
             out.append('<span class="deleted">' + ''.join(a[e[1]:e[2]]) + '</span>')
         elif e[0] == "insert":
-            out.append('<span class="added">'+''.join(b[e[3]:e[4]]) + "</span>")
+            print(e)
+            test_out.append(('<span class="added">' + b[e[3]:e[4]][0] + "</span>", e[3], e[4]))
+            out.append('<span class="added">'+''.join(b[e[3]:e[4]][0]) + "</span>")
         elif e[0] == "equal":
-            if e[1] != e[3] and e[2] != e[4]:
+            if e[1] != e[3] and e[2] != e[4]:  # Moved
                 print(a)
                 print(b)
-                print(e)
-                print(''.join(a[e[1]:e[2]]))
-                print(''.join(b[e[1]:e[2]]))
+                # print(e)
+                print(a[e[1]:e[2]], ' delete from ', e[1], e[2])
+                print('Moved to ', e[3], e[4])
+                # print(''.join(a[e[1]:e[2]]))
+                # print(''.join(b[e[1]:e[2]]))
+                test_out.append(('<span class="deleted">' + a[e[1]:e[2]][0] + '</span>', e[1], e[2]))
+                test_out.append(('<span class="moved">' + b[e[3]:e[4]][0] + '</span>', e[3], e[4]))
                 out.append('<span class="moved">' + ''.join(b[e[3]:e[4]]) + '</span>')
             else:
                 out.append(''.join(b[e[3]:e[4]]))
+                test_out.append(b[e[3]:e[4]][0])
         else:
             raise "Um, something's broken. I didn't expect a '" + e[0] + "'."
+    print(test_out)
     return ''.join(out)
 
 
