@@ -16,45 +16,40 @@ def textDiff(a, b):
     """Takes in strings a and b and returns a human-readable HTML diff."""
     out = []
     test_out = []
-    #a, b = html2list(a), html2list(b)
-    a, b = a.splitlines(), b.splitlines()
+    a, b = html2list(a), html2list(b)
     try:  # autojunk can cause malformed HTML, but also speeds up processing.
         s = difflib.SequenceMatcher(None, a, b, autojunk=True)
     except TypeError:
         s = difflib.SequenceMatcher(None, a, b)
+    print(a)
+    print(b)
     for e in s.get_opcodes():
+        print(out)
         if e[0] == "replace":
-            # @@ need to do something more complicated here
-            # call textDiff but not for html, but for some html... ugh
-            # gonna cop-out for now
             out.append('<span class="deleted">'+''.join(a[e[1]:e[2]]) + '</span><span class="added">'+''.join(b[e[3]:e[4]])+"</span>")
         elif e[0] == "delete":
-            print(e)
-            print(a[e[1]:e[2]], 'deleted from ', e[1], e[2])
-            test_out.append(('<span class="deleted">' + a[e[1]:e[2]][0] + '</span>', e[1], e[2]))
+            # print(e)
+            # print(a[e[1]:e[2]], 'deleted from ', e[1], e[2])
             out.append('<span class="deleted">' + ''.join(a[e[1]:e[2]]) + '</span>')
         elif e[0] == "insert":
             print(e)
-            test_out.append(('<span class="added">' + b[e[3]:e[4]][0] + "</span>", e[3], e[4]))
-            out.append('<span class="added">'+''.join(b[e[3]:e[4]][0]) + "</span>")
+            out.append('<span class="added">'+''.join(b[e[3]:e[4]]) + "</span>")
         elif e[0] == "equal":
             if e[1] != e[3] and e[2] != e[4]:  # Moved
-                print(a)
-                print(b)
-                # print(e)
-                print(a[e[1]:e[2]], ' delete from ', e[1], e[2])
+                print(e)
+                #print(a[e[3]:e[4]])
+                print(a[e[1]:e[2]-1], ' delete from ', e[1], e[2])
                 print('Moved to ', e[3], e[4])
-                # print(''.join(a[e[1]:e[2]]))
-                # print(''.join(b[e[1]:e[2]]))
-                test_out.append(('<span class="deleted">' + a[e[1]:e[2]][0] + '</span>', e[1], e[2]))
-                test_out.append(('<span class="moved">' + b[e[3]:e[4]][0] + '</span>', e[3], e[4]))
-                out.append('<span class="moved">' + ''.join(b[e[3]:e[4]]) + '</span>')
+                out.append('<span class="moved">' + ''.join(b[e[3]:e[4]-1]) + '</span>')
             else:
-                out.append(''.join(b[e[3]:e[4]]))
-                test_out.append(b[e[3]:e[4]][0])
+                out.append(''.join(b[e[3] - 1:e[4]]))
+                if e[3] > 0:
+                    out.append(''.join(b[e[3] - 1:e[4]]))
+                else:
+                    out.append(''.join(b[e[3]:e[4]]))
         else:
             raise "Um, something's broken. I didn't expect a '" + e[0] + "'."
-    print(test_out)
+    print(out)
     return ''.join(out)
 
 
@@ -65,18 +60,28 @@ def html2list(x, b=0):
     for c in x:
         if mode == 'tag':
             if c == '>':
-                if b: cur += ']'
-                else: cur += c
-                out.append(cur); cur = ''; mode = 'char'
-            else: cur += c
+                if b:
+                    cur += ']'
+                else:
+                    cur += c
+                out.append(cur)
+                cur = ''
+                mode = 'char'
+            else:
+                cur += c
         elif mode == 'char':
             if c == '<':
                 out.append(cur)
-                if b: cur = '['
-                else: cur = c
+                if b:
+                    cur = '['
+                else:
+                    cur = c
                 mode = 'tag'
-            elif c in string.whitespace: out.append(cur+c); cur = ''
-            else: cur += c
+            elif c in string.whitespace:
+                out.append(cur+c)
+                cur = ''
+            else:
+                cur += c
     out.append(cur)
     return list(filter(lambda x: x.strip() is not '', out))
 
